@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.backend.concesionario.apirest.dtos.VentaDTO;
 import com.backend.concesionario.apirest.entities.Venta;
 import com.backend.concesionario.apirest.repositories.VentaRepository;
 
@@ -34,4 +35,25 @@ public class VentaService {
     public void deleteById(Long id) {
         ventaRepository.deleteById(id);
     }
+    
+    public VentaDTO obtenerVentaPorId(Long id) {
+        Venta venta = ventaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Venta no encontrada con el ID: " + id));
+        // Construir el DTO a partir de los datos de la venta, cliente y vehículo
+        return new VentaDTO(
+                venta.getId(),
+                venta.getFechaVenta(),
+                venta.getCliente().getNombre(),
+                venta.getCliente().getApellidos(),
+                venta.getCliente().getDireccion(),
+                venta.getCliente().getTelefono(),
+                venta.getCliente().getEmail(),
+                venta.getVehiculo().getMatricula(),
+                venta.getVehiculo().getMarca(),
+                venta.getVehiculo().getModelo(),
+                venta.getVehiculo().getColor(),
+                venta.getVehiculo().getPrecio()
+        );
+    }
+    
 }

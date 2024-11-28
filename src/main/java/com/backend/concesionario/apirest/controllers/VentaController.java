@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.backend.concesionario.apirest.dtos.VentaDTO;
 import com.backend.concesionario.apirest.entities.Venta;
 import com.backend.concesionario.apirest.services.VentaService;
 
@@ -35,14 +36,15 @@ public class VentaController {
         return ResponseEntity.ok(ventas);
     }
 
-    // Método para obtener una venta por ID
+   // Método para obtener los datos de una venta por ID (datos del cliente y vehículo).
     @GetMapping("/{id}")
-    public ResponseEntity<?> getVentaById(@PathVariable Long id) {
-        Optional<Venta> venta = ventaService.findById(id);
-        if (!venta.isPresent()) {
+    public ResponseEntity<?> obtenerVenta(@PathVariable Long id) {
+        try {
+            VentaDTO ventaDTO = ventaService.obtenerVentaPorId(id);
+            return ResponseEntity.ok(ventaDTO);
+        } catch (RuntimeException ex) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("La venta con ID " + id + " no existe.");
         }
-        return ResponseEntity.ok(venta.get());
     }
 
     // Método para crear una nueva venta
